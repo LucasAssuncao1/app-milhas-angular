@@ -1,0 +1,69 @@
+<app-card variant="secondary" class="form-busca">
+  <form [formGroup]="formBuscaService.formBusca" (ngSubmit)="buscar()">
+    <h2>Passagens</h2>
+    <div class="flex-container">
+      <mat-button-toggle-group aria-label="Tipo de Passagem" formControlName="somenteIda">
+
+        <mat-button-toggle [value]="false">
+          <mat-icon *ngIf="!formBuscaService.formBusca.get('somenteIda')?.value">check</mat-icon>
+          IDA E VOLTA
+        </mat-button-toggle>
+
+        <mat-button-toggle [value]="true">
+          <mat-icon *ngIf="formBuscaService.formBusca.get('somenteIda')?.value">check</mat-icon>
+          SOMENTE IDA
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+
+        <mat-chip (click)="formBuscaService.openDialog()" >
+            <div class="inner">
+              <mat-icon>check</mat-icon>
+              {{formBuscaService.getDescricaoDePassageiros()}}
+            </div>
+        </mat-chip>
+
+        <mat-chip (click)="formBuscaService.openDialog()" >
+            <div class="inner">
+              <mat-icon>check</mat-icon>
+              {{formBuscaService.obterControle('tipo').value}}
+            </div>
+        </mat-chip>
+    </div>
+
+    <div class="flex-container">
+      <app-dropdown-uf
+       label="Origem"
+       iconePrefixo="flight_takeoff"
+       [myControl]="formBuscaService.obterControle('origem')"
+       ></app-dropdown-uf>
+
+      <button (click)="formBuscaService.trocarOrigemDestino()" mat-icon-button>
+        <mat-icon>sync_alt</mat-icon>
+      </button>
+
+      <app-dropdown-uf
+      label="Destino"
+      iconePrefixo="flight_land"
+       [myControl]="formBuscaService.obterControle('destino')"
+       ></app-dropdown-uf>
+
+      <mat-form-field class="input-container" appearance="outline">
+        <mat-label>Data de ida</mat-label>
+        <input matInput [matDatepicker]="pickertakeoff">
+        <mat-datepicker-toggle matIconSuffix [for]="pickertakeoff"></mat-datepicker-toggle>
+        <mat-datepicker #pickertakeoff></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="input-container" appearance="outline">
+        <mat-label>Data de volta</mat-label>
+        <input matInput [matDatepicker]="pickerland" >
+        <mat-datepicker-toggle matIconSuffix [for]="pickerland"></mat-datepicker-toggle>
+        <mat-datepicker #pickerland></mat-datepicker>
+      </mat-form-field>
+
+      <button class="button-buscar" type="submit" mat-raised-button color="primary">BUSCAR</button>
+
+    </div>
+  </form>
+</app-card>

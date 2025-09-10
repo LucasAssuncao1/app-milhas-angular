@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { EmailValidator, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AutenticacaoService } from 'src/app/core/services/autenticacao.service';
 
 @Component({
   selector: 'app-login',
@@ -11,17 +13,33 @@ export class LoginComponent implements OnInit{
 
   loginForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder){ }
+  constructor(
+    private formBuilder: FormBuilder,
+    private autenticacaoService: AutenticacaoService,
+    private router: Router
+  ){}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      email: [null],
-      senha: [null]
+      email: [null,[ Validators.required, Validators.email]],
+      senha: [null,[ Validators.required]]
     })
   }
 
   login() {
-    console.log("Login realizado", this.loginForm.value);
+    const email = this.loginForm.value.email;
+    const senha = this.loginForm.value.senha;
+
+    this.autenticacaoService.autenticar(email, senha).subscribe({
+      next: (response) => {
+        console.log('Login Realizado', response),
+        this.router.navigateByUrl('/');
+        this.loginForm.reset();
+      },
+      error: (err) => {
+          console.log('Erro ao realizar o login: ', err);
+      }
+    })
 
 }
 
